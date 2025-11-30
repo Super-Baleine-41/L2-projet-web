@@ -34,11 +34,13 @@ export default class PokeAPI {
 	}
 
 	async getPokemon(id) {
+		if (typeof id !== 'number') throw new Error('ID must be a number');
 		return await this.get(`pokemon/${id}`);
 	}
 
 	getPokemonId(pokemon) {
-		return pokemon.url.split('/').filter(Boolean).pop();
+		if (typeof pokemon !== 'object' && typeof pokemon.url !== 'string') throw new Error('Invalid Pokémon object');
+		return parseInt(pokemon.url.split('/').filter(Boolean).pop(), 10);
 	}
 
 	getPokemonImageUrl(pokemon) {
@@ -62,21 +64,39 @@ export default class PokeAPI {
 		if (typeof limit !== 'number' || limit <= 0) throw new Error('Limit must be a positive number');
 		if (typeof offset !== 'number' || offset < 0) throw new Error('Offset must be a non-negative number');
 		const endpoint = offset === 0 ? `generation?limit=${limit}` : `generation?limit=${limit}&offset=${offset}`;
-		return await this.get('generation');
+		return (await this.get('generation')).results;
+	}
+
+	getGenerationId(generation) {
+		if (typeof generation !== 'object' && typeof generation.url !== 'string') throw new Error('Invalid generation object');
+		return parseInt(generation.url.split('/').filter(Boolean).pop(), 10);
 	}
 
 	async getGeneration(number) {
-		if (typeof number !== 'number') throw new Error('Number must be a number');
+		if (typeof number !== 'number') throw new Error('Must provide a number');
 		return await this.get(`generation/${number}`);
 	}
 
-	async getRegions() {
-		return await this.get('region');
+	async getRegions(limit = 100, offset = 0) {
+		if (typeof limit !== 'number' || limit <= 0) throw new Error('Limit must be a positive number');
+		if (typeof offset !== 'number' || offset < 0) throw new Error('Offset must be a non-negative number');
+		const endpoint = offset === 0 ? `region?limit=${limit}` : `region?limit=${limit}&offset=${offset}`;
+		return (await this.get('region')).results;
 	}
 
 	async getRegion(name) {
 		if (typeof name !== 'string') throw new Error('Name must be a string');
 		return await this.get(`region/${name}`);
+	}
+
+	getPokedexId(pokedex) {
+		if (typeof pokedex !== 'object' && typeof pokedex.url !== 'string') throw new Error('Invalid pokedex object');
+		return parseInt(pokedex.url.split('/').filter(Boolean).pop(), 10);
+	}
+
+	async getPokedex(id) {
+		if (typeof id !== 'number') throw new Error('ID must be a number');
+		return await this.get(`pokedex/${id}`);
 	}
 
 

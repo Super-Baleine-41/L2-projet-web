@@ -1,16 +1,16 @@
 import './style.css'
 import PokeAPI from './PokeAPI.js'
-import {div, h1, input, img, span} from './dom.js'
+import {div, h1, input, img, span, select, option} from './dom.js'
 import { render } from './reactive.js'
+import {CARD_CLASSES, FILTER_SELECT_CLASSES} from "./constants.js";
 
 const app = document.querySelector('#app')
 const api = new PokeAPI();
 
-let pokemon = [];
 let search = '';
-const cardClasses = "border border-white/20 rounded-lg bg-white/5 cursor-pointer origin-center transition-transform duration-200"
 
 const cardState = new Map(); // key: pokemon.id, value: { isHovering, timeoutId, pokemonData }
+
 
 const PokemonCard = (parent, p) => {
 	const pokemonId = api.getPokemonId(p);
@@ -27,7 +27,7 @@ const PokemonCard = (parent, p) => {
 			if (state.pokemonData) {
 				render(detailsContainer,
 					div({},
-						div({}, `Type: ${state.pokemonData.types.map(t => t.type.name).join(', ')}`),
+						div({}, `Type: ${state.pokemonData.types.map(t => capitalize(t.type.name)).join(', ')}`),
 						div({}, `Hauteur: ${state.pokemonData.height / 10}m`),
 						div({}, `Poids: ${state.pokemonData.weight / 10}kg`)
 					)
@@ -39,7 +39,7 @@ const PokemonCard = (parent, p) => {
 			render(detailsContainer);
 		}
 		if (cardDiv) {
-			cardDiv.className = state.isHovering ? `${cardClasses} scale-110`: cardClasses;
+			cardDiv.className = state.isHovering ? `${CARD_CLASSES} scale-110`: CARD_CLASSES;
 		}
 	};
 
@@ -62,7 +62,7 @@ const PokemonCard = (parent, p) => {
 	};
 
 	cardDiv = div({
-			className: cardClasses,
+			className: CARD_CLASSES,
 			onMouseEnter: handleMouseEnter,
 			onMouseLeave: handleMouseLeave
 		},
@@ -83,7 +83,11 @@ const PokemonCard = (parent, p) => {
 	return parent;
 };
 
-const PokemonCards = (parent) => {
+const capitalize = (str) => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+const PokemonCards = (parent, pokemon) => {
 	const filtered = pokemon.filter(p =>
 		p.name.toLowerCase().includes(search.toLowerCase())
 	);
@@ -103,7 +107,15 @@ const PokemonCards = (parent) => {
 
 (async () => {
 	const totalCount = await api.getPokemonCount();
-	pokemon = await api.getAllPokemon(totalCount);
+	let fullPokemonLists = await api.getAllPokemon(totalCount);
+	let pokemon = fullPokemonLists;
+	const types = await api.getTypes();
+	const generations = await api.getGenerations();
+	for (const generation of generations) {
+		generation.id = api.getGenerationId(generation);
+		generation.realName = `Gen ${generation.id}`
+	}
+	const regions = await api.getRegions();
 
 	const cardContainer = div({
 		id: 'card-container',
@@ -112,20 +124,87 @@ const PokemonCards = (parent) => {
 
 	render(app,
 		div({ className: 'p-4' },
-			div({ className: 'flex items-center gap-4 mb-2' },
-				input({
-					placeholder: 'Recherche...',
-					onInput: (e) => {
-						search = e.target.value;
-						PokemonCards(cardContainer);
+			div({
+					className: 'flex-col'
+				},
+				div({ className: 'flex items-center gap-4 mb-2' },
+					input({
+						placeholder: 'Recherche...',
+						onInput: (e) => {
+							search = e.target.value;
+							PokemonCards(cardContainer, pokemon);
+						},
+						className: 'w-full rounded-lg border-2 border-gray-300 p-2 flex items-center'
+					}),
+					span({ className: 'text-gray-400' }, `Total Pokémon: ${fullPokemonLists.length}`)
+				),
+				div({
+						id: 'filter-container',
 					},
-					className: 'w-full rounded-lg border-2 border-gray-300 p-2 flex items-center'
-				}),
-				span({ className: 'text-gray-400' }, `Total Pokémon: ${pokemon.length}`)
+					select({
+						className: FILTER_SELECT_CLASSES,
+						onChange: async (e) => {
+								const type = e.target.value;
+								if (type === '') {
+									pokemon = fullPokemonLists;
+									PokemonCards(cardContainer, pokemon);
+								} else {
+									pokemon = (await api.getType(type)).pokemon.map(p => p.pokemon);
+									PokemonCards(cardContainer, pokemon);
+								}
+						}
+						},
+						option({ value: '' }, 'Tous les types'),
+						...types.map(t => option({ value: t.name }, capitalize(t.name)))
+					),
+					select({
+						className: FILTER_SELECT_CLASSES,
+						onChange: async (e) => {
+							const generation = e.target.value;
+							if (generation === '') {
+								pokemon = fullPokemonLists;
+								PokemonCards(cardContainer, pokemon);
+							} else {
+								pokemon = (await api.getGeneration(parseInt(generation, 10))).pokemon_species;
+								PokemonCards(cardContainer, pokemon);
+							}
+						}
+					},
+						option({ value: '' }, 'Toutes les générations'),
+						...generations.map(g => option({ value: g.id }, capitalize(g.realName)))
+					),
+					select({
+						className: FILTER_SELECT_CLASSES,
+						onChange: async (e) => {
+							const region = e.target.value;
+							if (region === '') {
+								pokemon = fullPokemonLists;
+								PokemonCards(cardContainer, pokemon);
+							} else {
+								const { pokedexes } = await api.getRegion(region);
+
+								const pokedexDataList = await Promise.all(
+									pokedexes.map(pokedex => api.getPokedex(api.getPokedexId(pokedex)))
+								);
+								const seenNames = new Set();
+								pokemon = pokedexDataList.flatMap(data => data.pokemon_entries).filter(entry => {
+									if (seenNames.has(entry.pokemon_species.name)) return false;
+									seenNames.add(entry.pokemon_species.name);
+									return true;
+								}).map(entry => entry.pokemon_species);
+
+								PokemonCards(cardContainer, pokemon);
+							}
+						}
+					},
+						option({ value: '' }, 'Toutes les régions'),
+						...regions.map(r => option({ value: r.name }, capitalize(r.name)))
+					)
+				)
 			),
 			cardContainer
 		)
 	);
 
-	PokemonCards(cardContainer);
+	PokemonCards(cardContainer, pokemon);
 })();
