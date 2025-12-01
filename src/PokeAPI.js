@@ -98,8 +98,4 @@ export default class PokeAPI {
 		if (typeof id !== 'number') throw new Error('ID must be a number');
 		return await this.get(`pokedex/${id}`);
 	}
-
-
-
-
 }

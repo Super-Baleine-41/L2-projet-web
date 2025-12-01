@@ -2,7 +2,7 @@ import './style.css'
 import PokeAPI from './PokeAPI.js'
 import {div, h1, input, img, span, select, option} from './dom.js'
 import { render } from './reactive.js'
-import {CARD_CLASSES, FILTER_SELECT_CLASSES} from "./constants.js";
+import { CARD_CLASSES, FILTER_SELECT_CLASSES } from "./constants.js";
 
 const app = document.querySelector('#app')
 const api = new PokeAPI();
@@ -105,17 +105,38 @@ const PokemonCards = (parent, pokemon) => {
 	return parent;
 };
 
+const pokemonToSet = (pokemonList) => {
+	return new Set(pokemonList.map(p => p.name));
+};
+
+const applyAllFilter = (fullPokemon, pokemonOfCurrentType, pokemonOfCurrentGeneration, pokemonOfCurrentRegion) => {
+	// Converting to sets make the lookup WAY faster
+	const typeSet = pokemonToSet(pokemonOfCurrentType);
+	const genSet = pokemonToSet(pokemonOfCurrentGeneration);
+	const regionSet = pokemonToSet(pokemonOfCurrentRegion);
+
+	return fullPokemon.filter(p =>
+		typeSet.has(p.name) &&
+		genSet.has(p.name) &&
+		regionSet.has(p.name)
+	);
+}
+
+
 (async () => {
 	const totalCount = await api.getPokemonCount();
 	let fullPokemonLists = await api.getAllPokemon(totalCount);
 	let pokemon = fullPokemonLists;
 	const types = await api.getTypes();
+	let pokemonOfCurrentType = pokemon;
 	const generations = await api.getGenerations();
 	for (const generation of generations) {
 		generation.id = api.getGenerationId(generation);
 		generation.realName = `Gen ${generation.id}`
 	}
+	let pokemonOfCurrentGeneration = pokemon;
 	const regions = await api.getRegions();
+	let pokemonOfCurrentRegion = pokemon;
 
 	const cardContainer = div({
 		id: 'card-container',
@@ -146,10 +167,12 @@ const PokemonCards = (parent, pokemon) => {
 						onChange: async (e) => {
 								const type = e.target.value;
 								if (type === '') {
-									pokemon = fullPokemonLists;
+									pokemonOfCurrentType = fullPokemonLists;
+									pokemon = applyAllFilter(fullPokemonLists, pokemonOfCurrentType, pokemonOfCurrentGeneration, pokemonOfCurrentRegion);
 									PokemonCards(cardContainer, pokemon);
 								} else {
-									pokemon = (await api.getType(type)).pokemon.map(p => p.pokemon);
+									pokemonOfCurrentType = (await api.getType(type)).pokemon.map(p => p.pokemon);
+									pokemon = applyAllFilter(fullPokemonLists, pokemonOfCurrentType, pokemonOfCurrentGeneration, pokemonOfCurrentRegion);
 									PokemonCards(cardContainer, pokemon);
 								}
 						}
@@ -162,10 +185,12 @@ const PokemonCards = (parent, pokemon) => {
 						onChange: async (e) => {
 							const generation = e.target.value;
 							if (generation === '') {
-								pokemon = fullPokemonLists;
+								pokemonOfCurrentGeneration = fullPokemonLists;
+								pokemon = applyAllFilter(fullPokemonLists, pokemonOfCurrentType, pokemonOfCurrentGeneration, pokemonOfCurrentRegion);
 								PokemonCards(cardContainer, pokemon);
 							} else {
-								pokemon = (await api.getGeneration(parseInt(generation, 10))).pokemon_species;
+								pokemonOfCurrentGeneration = (await api.getGeneration(parseInt(generation, 10))).pokemon_species;
+								pokemon = applyAllFilter(fullPokemonLists, pokemonOfCurrentType, pokemonOfCurrentGeneration, pokemonOfCurrentRegion);
 								PokemonCards(cardContainer, pokemon);
 							}
 						}
@@ -187,12 +212,12 @@ const PokemonCards = (parent, pokemon) => {
 									pokedexes.map(pokedex => api.getPokedex(api.getPokedexId(pokedex)))
 								);
 								const seenNames = new Set();
-								pokemon = pokedexDataList.flatMap(data => data.pokemon_entries).filter(entry => {
+								pokemonOfCurrentRegion = pokedexDataList.flatMap(data => data.pokemon_entries).filter(entry => {
 									if (seenNames.has(entry.pokemon_species.name)) return false;
 									seenNames.add(entry.pokemon_species.name);
 									return true;
 								}).map(entry => entry.pokemon_species);
-
+								pokemon = applyAllFilter(fullPokemonLists, pokemonOfCurrentType, pokemonOfCurrentGeneration, pokemonOfCurrentRegion);
 								PokemonCards(cardContainer, pokemon);
 							}
 						}
