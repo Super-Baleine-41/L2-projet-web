@@ -4,8 +4,8 @@ import { div, input, span, select, option } from './utils/ui/dom.js'
 import { render } from './utils/ui/reactive.js'
 import { CARD_CLASSES, FILTER_SELECT_CLASSES } from "./utils/constants.js";
 import { PokemonCards } from './components/PokemonCards.js'
-import { strings } from './utils/strings.js'
 import { applyAllFilters } from './utils/filters.js'
+import { capitalize } from "./utils/strings.js";
 
 const app = document.querySelector('#app')
 const api = new PokeAPI();
@@ -66,7 +66,7 @@ const api = new PokeAPI();
 						}
 						},
 						option({ value: '' }, 'All types'),
-						...types.map(t => option({ value: t.name }, strings(t.name)))
+						...types.map(t => option({ value: t.name }, capitalize(t.name)))
 					),
 					select({
 						className: FILTER_SELECT_CLASSES,
@@ -77,7 +77,7 @@ const api = new PokeAPI();
 						}
 					},
 						option({ value: '' }, 'All generations'),
-						...generations.map(g => option({ value: g.id }, strings(g.realName)))
+						...generations.map(g => option({ value: g.id }, capitalize(g.realName)))
 					),
 					select({
 						className: FILTER_SELECT_CLASSES,
@@ -101,7 +101,7 @@ const api = new PokeAPI();
 						}
 					},
 						option({ value: '' }, 'All regions'),
-						...regions.map(r => option({ value: r.name }, strings(r.name)))
+						...regions.map(r => option({ value: r.name }, capitalize(r.name)))
 					)
 				)
 			),

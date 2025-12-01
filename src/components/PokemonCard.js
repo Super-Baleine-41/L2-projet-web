@@ -1,5 +1,6 @@
 import { div, h1, img } from '../utils/ui/dom.js'
 import { render } from '../utils/ui/reactive.js'
+import {capitalize, titleCase} from '../utils/strings.js'
 
 export const cardState = new Map(); // key: pokemon.id, value: { isHovering, timeoutId, pokemonData }
 
@@ -17,7 +18,7 @@ export const PokemonCard = (parent, p, api, CARD_CLASSES) => {
 			if (state.pokemonData)
 				render(detailsContainer,
 					div({},
-						div({}, `Type: ${state.pokemonData.types.map(t => t.type.name).join(', ')}`),
+						div({}, `Type: ${state.pokemonData.types.map(t => capitalize(t.type.name)).join(', ')}`),
 						div({}, `Height: ${state.pokemonData.height / 10}m`),
 						div({}, `Weight: ${state.pokemonData.weight / 10}kg`)
 					)
@@ -56,11 +57,11 @@ export const PokemonCard = (parent, p, api, CARD_CLASSES) => {
 		div({ className: 'flex flex-col items-center gap-2 p-4' },
 			img({
 				src: api.getPokemonImageUrl(p),
-				alt: `Image de ${p.name}`,
+				alt: `Image of ${capitalize(p.name)} #${pokemonId}`,
 				loading: 'lazy',
 				className: 'w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden'
 			}),
-			h1({ className: 'text-center text-lg strings' }, p.name),
+			h1({ className: 'text-center text-lg' }, capitalize(p.name)),
 			detailsContainer
 		)
 	);
