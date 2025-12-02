@@ -61,7 +61,7 @@ const PokemonCard = (parent, p, api) => {
 			onClick: async () => {
 				const detailedViewContainer = div({ className: 'w-full h-full' });
 				displayModal({
-					content: await PokemonDetailedView(detailedViewContainer, pokemonId, api)
+					content: await PokemonDetailedDialog(detailedViewContainer, pokemonId, api)
 				});
 			}
 		},
