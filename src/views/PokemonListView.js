@@ -5,11 +5,16 @@ import { render } from '@ui/reactive.js';
 import PokemonCards from '@components/PokemonCards.js';
 import { applyAllFilters } from '@utils/filters.js';
 import { capitalize } from '@utils/strings.js';
+import ViewOpenerButton from '@components/ViewOpenerButton.js';
+import MainMenuView from '@views/MainMenuView.js';
+import {ArrowLeft} from "lucide";
+import {icon} from "@ui/icons.js";
 
 export default class PokemonListView extends BaseView {
-	constructor(app, api = null) {
+	constructor(app, appState, api = null) {
 		super(app);
 		this.api = api || new PokeAPI();
+		this.appState = appState;
 		this.search = '';
 		this.filters = {};
 		this.fullPokemonList = [];
@@ -102,6 +107,18 @@ export default class PokemonListView extends BaseView {
 				div({
 						className: 'flex-col'
 					},
+					ViewOpenerButton(
+						div({ className: 'mb-4'}),
+						div({ className: 'flex items-center justify-center gap-2' },
+							icon(ArrowLeft, { className: 'w-4 h-4' }),
+							'Back to Menu'
+						),
+						MainMenuView,
+						this.app,
+						this.appState,
+						this.api,
+						'px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm transition-colors',
+					),
 					div({ className: 'flex items-center gap-4' },
 						input({
 							placeholder: 'Search...',

@@ -1,9 +1,15 @@
 import './style.css';
-import PokemonListView from '@views/PokemonListView.js';
+import MainMenuView from "@views/MainMenuView.js";
+import AppState from "@utils/AppState.js";
 
 const app = document.querySelector('#app');
 
 (async () => {
-	const view = new PokemonListView(app);
-	await view.render();
+	// Initialize global application state
+	const appState = new AppState();
+	
+	// Create and render the main menu
+	const mainMenu = new MainMenuView(app, appState);
+	appState.setCurrentView(mainMenu);
+	await mainMenu.render();
 })();
