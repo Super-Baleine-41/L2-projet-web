@@ -27,7 +27,8 @@ const renderEvolutionContent = (evolutions, pokemonData, api, onEvolutionClick) 
 				},
 				img({
 					src: api.getPokemonImageUrl(evo.id),
-					alt: titleCase(evo.name),
+					alt: `Image of ${capitalize(evo.name)} #${evo.id}`,
+					loading: 'lazy',
 					className: 'w-12 h-12'
 				}),
 				span({ className: 'text-xs text-center' }, titleCase(evo.name))
@@ -50,6 +51,7 @@ const renderVarietiesContent = (specialVarieties, api, onEvolutionClick) => {
 				img({
 					src: api.getPokemonImageUrl(varietyPokemonId),
 					alt: varietyLabel,
+					loading: 'lazy',
 					className: 'w-12 h-12'
 				}),
 				span({ className: 'text-xs text-center' }, varietyLabel)
@@ -168,6 +170,7 @@ const renderDetailedView = async (parent, pokemonId, api, onEvolutionChange) => 
 							src: spriteUrl,
 							alt: capitalize(type.type.name),
 							className: 'w-20 h-8 cursor-help',
+							loading: 'lazy',
 							title: capitalize(type.type.name)
 						}),
 						span({ className: 'text-xs' }, capitalize(type.type.name))
@@ -191,7 +194,7 @@ const renderDetailedView = async (parent, pokemonId, api, onEvolutionChange) => 
 		),
 		p({ className: 'text-sm' },
 			strong({}, 'Base XP: '),
-			span({}, pokemonData.base_experience.toString())
+			span({}, (pokemonData.base_experience || "N/A").toString())
 		)
 	);
 
@@ -215,7 +218,8 @@ const renderDetailedView = async (parent, pokemonId, api, onEvolutionChange) => 
 	const leftPanel = div({ className: 'flex flex-col gap-4' },
 		img({
 			src: api.getPokemonImageUrl(pokemonData.id),
-			alt: titleCase(pokemonData.name),
+			alt: `Image of ${titleCase(pokemonData.name)} #${pokemonData.id}`,
+			loading: 'lazy',
 			className: 'w-48 h-48 rounded-lg'
 		}),
 		evolutionContainer

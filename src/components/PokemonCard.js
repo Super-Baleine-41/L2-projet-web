@@ -68,7 +68,7 @@ const PokemonCard = (parent, p, api) => {
 		div({ className: 'flex flex-col items-center gap-2 p-4' },
 			img({
 				src: api.getPokemonImageUrl(p),
-				alt: `Image of ${capitalize(p.name)} #${pokemonId}`,
+				alt: `Image of ${titleCase(p.name)} #${pokemonId}`,
 				loading: 'lazy',
 				className: 'w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden'
 			}),

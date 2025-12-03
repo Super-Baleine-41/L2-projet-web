@@ -30,7 +30,7 @@ export default class MainMenuView extends BaseView {
 							},
 							option({ value: '' }, 'Select Account...'),
 							...this.appState.getAccounts().map(account =>
-								option({ value: account }, account)
+								option({ value: account, selected: account === this.appState.getCurrentAccount() }, account)
 							)
 						)
 					)
