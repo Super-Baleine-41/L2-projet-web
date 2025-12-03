@@ -1,11 +1,11 @@
-import BaseView from "@ui/BaseView.js";
-import PokeAPI from "@utils/PokeAPI.js";
-import { div, h1, h2, select, option, span } from "@ui/dom.js";
-import { render } from "@ui/reactive.js";
-import { icon } from "@ui/icons.js";
-import { Sword, Backpack, BookOpen } from 'lucide';
 import ViewOpenerButton from "@components/ViewOpenerButton.js";
+import BaseView from "@ui/BaseView.js";
+import { div, h1, h2, option, select, span } from "@ui/dom.js";
+import { icon } from "@ui/icons.js";
+import { render } from "@ui/reactive.js";
+import PokeAPI from "@utils/PokeAPI.js";
 import PokemonListView from "@views/PokemonListView.js";
+import { Backpack, BookOpen, Sword } from 'lucide';
 
 export default class MainMenuView extends BaseView {
 	constructor(app, appState, api = null) {
@@ -23,11 +23,11 @@ export default class MainMenuView extends BaseView {
 					div({ className: 'flex items-center gap-3' },
 						span({ className: 'text-gray-300 text-sm font-medium' }, 'Account:'),
 						select({
-							className: 'px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white cursor-pointer hover:border-gray-500 transition-colors',
-							onChange: (e) => {
-								this.appState.setCurrentAccount(e.target.value);
-							}
-						},
+								className: 'px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white cursor-pointer hover:border-gray-500 transition-colors',
+								onChange: (e) => {
+									this.appState.setCurrentAccount(e.target.value);
+								}
+							},
 							option({ value: '' }, 'Select Account...'),
 							...this.appState.getAccounts().map(account =>
 								option({ value: account }, account)
@@ -39,16 +39,16 @@ export default class MainMenuView extends BaseView {
 					div({ className: 'flex flex-col gap-6 max-w-md w-full' },
 						h2({ className: 'text-xl font-bold text-white text-center mb-4' }, 'Choose an Option'),
 						div({
-							className: `${buttonClassName} bg-gradient-to-r from-red-600 to-red-700 opacity-50 cursor-not-allowed flex items-center justify-center gap-3`,
-							title: 'Battles system not yet implemented'
-						},
+								className: `${buttonClassName} bg-gradient-to-r from-red-600 to-red-700 opacity-50 cursor-not-allowed flex items-center justify-center gap-3`,
+								title: 'Battles system not yet implemented'
+							},
 							icon(Sword, { className: 'w-6 h-6' }),
 							span({}, 'Battles')
 						),
 						div({
-							className: `${buttonClassName} bg-gradient-to-r from-blue-600 to-blue-700 opacity-50 cursor-not-allowed flex items-center justify-center gap-3`,
-							title: 'Inventory system not yet implemented'
-						},
+								className: `${buttonClassName} bg-gradient-to-r from-blue-600 to-blue-700 opacity-50 cursor-not-allowed flex items-center justify-center gap-3`,
+								title: 'Inventory system not yet implemented'
+							},
 							icon(Backpack, { className: 'w-6 h-6' }),
 							span({}, 'Inventory')
 						),

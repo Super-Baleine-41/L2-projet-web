@@ -1,8 +1,8 @@
-
 export default class PokeAPI {
 	baseUrl;
 	cache;
 	apiCalls;
+
 	constructor() {
 		this.baseUrl = 'https://pokeapi.co/api/v2/';
 		this.cache = new Map();
@@ -121,7 +121,7 @@ export default class PokeAPI {
 		return await this.#getSingle('ability', id);
 	}
 
-	async getColors(limit = 100, offset = 0)  {
+	async getColors(limit = 100, offset = 0) {
 		return await this.#getWithLimitAndOffset('pokemon-color', limit, offset);
 	}
 
@@ -134,7 +134,7 @@ export default class PokeAPI {
 		return await this.#getSingle('pokemon-color', id);
 	}
 
-	async getHabitats(limit = 100, offset = 0)  {
+	async getHabitats(limit = 100, offset = 0) {
 		return await this.#getWithLimitAndOffset('pokemon-habitat', limit, offset);
 	}
 

@@ -1,14 +1,14 @@
-import BaseView from '@ui/BaseView.js';
-import PokeAPI from '@utils/PokeAPI.js';
-import { div, input, span, select, option } from '@ui/dom.js';
-import { render } from '@ui/reactive.js';
 import PokemonCards from '@components/PokemonCards.js';
-import { applyAllFilters } from '@utils/filters.js';
-import { capitalize } from '@utils/strings.js';
 import ViewOpenerButton from '@components/ViewOpenerButton.js';
+import BaseView from '@ui/BaseView.js';
+import { div, input, option, select, span } from '@ui/dom.js';
+import { icon } from "@ui/icons.js";
+import { render } from '@ui/reactive.js';
+import { applyAllFilters } from '@utils/filters.js';
+import PokeAPI from '@utils/PokeAPI.js';
+import { capitalize } from '@utils/strings.js';
 import MainMenuView from '@views/MainMenuView.js';
-import {ArrowLeft} from "lucide";
-import {icon} from "@ui/icons.js";
+import { ArrowLeft } from "lucide";
 
 export default class PokemonListView extends BaseView {
 	constructor(app, appState, api = null) {
@@ -56,7 +56,7 @@ export default class PokemonListView extends BaseView {
 		this.fullPokemonList = await this.api.getAllPokemon(totalCount);
 
 		this.types = await this.api.getTypes();
-		
+
 		this.generations = await this.api.getGenerations();
 		for (const generation of this.generations) {
 			generation.id = this.api.getGenerationId(generation);
@@ -108,7 +108,7 @@ export default class PokemonListView extends BaseView {
 						className: 'flex-col'
 					},
 					ViewOpenerButton(
-						div({ className: 'mb-4'}),
+						div({ className: 'mb-4' }),
 						div({ className: 'flex items-center justify-center gap-2' },
 							icon(ArrowLeft, { className: 'w-4 h-4' }),
 							'Back to Menu'

@@ -1,8 +1,8 @@
-import { div, img, h2, h3, span, p, strong, button } from '@ui/dom.js';
-import { render } from '@ui/reactive.js';
-import { titleCase, capitalize } from '@utils/strings.js';
-import { ChevronLeft, ChevronRight } from 'lucide';
+import { button, div, h2, h3, img, p, span, strong } from '@ui/dom.js';
 import { icon } from '@ui/icons.js';
+import { render } from '@ui/reactive.js';
+import { capitalize, titleCase } from '@utils/strings.js';
+import { ChevronLeft, ChevronRight } from 'lucide';
 import StatBar from '../StatBar.js';
 
 const extractEvolutions = (chain, evolutions = []) => {
@@ -21,10 +21,10 @@ const renderEvolutionContent = (evolutions, pokemonData, api, onEvolutionClick) 
 		...evolutions.map(evo => {
 			const isCurrentPokemon = evo.id === pokemonData.id;
 			return div({
-				className: `flex flex-col items-center gap-1 p-2 rounded ${isCurrentPokemon ? 'bg-blue-900/50 border border-blue-500' : 'hover:bg-gray-800/50'} cursor-pointer transition-all`,
-				onClick: () => onEvolutionClick(evo.id),
-				title: titleCase(evo.name)
-			},
+					className: `flex flex-col items-center gap-1 p-2 rounded ${isCurrentPokemon ? 'bg-blue-900/50 border border-blue-500' : 'hover:bg-gray-800/50'} cursor-pointer transition-all`,
+					onClick: () => onEvolutionClick(evo.id),
+					title: titleCase(evo.name)
+				},
 				img({
 					src: api.getPokemonImageUrl(evo.id),
 					alt: titleCase(evo.name),
@@ -43,10 +43,10 @@ const renderVarietiesContent = (specialVarieties, api, onEvolutionClick) => {
 			const varietyLabel = titleCase(variety.pokemon.name);
 
 			return div({
-				className: 'flex flex-col items-center gap-1 p-2 rounded hover:bg-gray-800/50 cursor-pointer transition-all',
-				onClick: () => onEvolutionClick(varietyPokemonId),
-				title: varietyLabel
-			},
+					className: 'flex flex-col items-center gap-1 p-2 rounded hover:bg-gray-800/50 cursor-pointer transition-all',
+					onClick: () => onEvolutionClick(varietyPokemonId),
+					title: varietyLabel
+				},
 				img({
 					src: api.getPokemonImageUrl(varietyPokemonId),
 					alt: varietyLabel,
@@ -61,7 +61,7 @@ const renderVarietiesContent = (specialVarieties, api, onEvolutionClick) => {
 const updateEvolutionChain = (container, showEvolutionChain, evolutions, specialVarieties, pokemonData, api, onEvolutionClick) => {
 	const content = showEvolutionChain ?
 		renderEvolutionContent(evolutions, pokemonData, api, onEvolutionClick)
-	:
+		:
 		renderVarietiesContent(specialVarieties, api, onEvolutionClick);
 
 	const toggleButtonsArray = [

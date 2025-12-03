@@ -1,9 +1,12 @@
-import { resolveParent } from "./reactive.js";
+import { X } from 'lucide'
 import { button, dialog, div, span } from "./dom.js";
 import { icon } from "./icons.js";
-import { X } from 'lucide'
+import { resolveParent } from "./reactive.js";
 
-export const displayModal = ({content, parent = null, onClose = (_) => {}}) => {
+export const displayModal = ({
+								 content, parent = null, onClose = (_) => {
+	}
+							 }) => {
 	if (parent == null) parent = document.body;
 	let actualParent = resolveParent(parent);
 	let dialogElement;
