@@ -8,9 +8,9 @@ import PokemonListView from "@views/PokemonListView.js";
 import { Backpack, BookOpen, Sword } from 'lucide';
 
 export default class MainMenuView extends BaseView {
-	constructor(app, appState, api = null) {
+	constructor(app, appState, api) {
 		super(app);
-		this.api = api || new PokeAPI();
+		this.api = api
 		this.appState = appState;
 	}
 
