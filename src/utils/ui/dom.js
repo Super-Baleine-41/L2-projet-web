@@ -11,7 +11,7 @@ export function el(tag, props = {}, ...children) {
 		else if (key.startsWith('on') && typeof value === 'function') {
 			const eventName = key.slice(2).toLowerCase()
 			element.addEventListener(eventName, value)
-		} else if (key === 'checked' || key === 'disabled' || key === 'selected' || key === 'value')
+		} else if (key === 'checked' || key === 'disabled' || key === 'selected' || key === 'value' || key === 'hidden')
 			element[key] = value
 		else if (value != null)
 			element.setAttribute(key, value.toString())

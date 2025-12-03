@@ -15,6 +15,7 @@ export default class MainMenuView extends BaseView {
 
 	async render() {
 		const buttonClassName = 'w-full px-6 py-4 rounded-lg text-white font-semibold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg';
+		const isLoggedIn = this.appState.getCurrentAccount() !== null;
 		render(this.app,
 			div({ className: 'min-h-screen flex flex-col' },
 				div({ className: 'flex justify-between items-center p-6 border-b border-gray-700' },
@@ -27,7 +28,7 @@ export default class MainMenuView extends BaseView {
 									this.appState.setCurrentAccount(e.target.value);
 								}
 							},
-							option({ value: '' }, 'Select Account...'),
+							option({ value: '', disabled: true, selected: !isLoggedIn, hidden: true }, 'Select Account...'),
 							...this.appState.getAccounts().map(account =>
 								option({ value: account, selected: account === this.appState.getCurrentAccount() }, account)
 							)
