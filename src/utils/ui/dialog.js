@@ -3,7 +3,7 @@ import { button, dialog, div, span } from "./dom.js";
 import { icon } from "./icons.js";
 import { render, resolveParent } from "./reactive.js";
 
-export const displayDialog = async ({ DialogComponentOrContent, parent, onClose, }, ...args) => {
+export const displayDialog = async ({ DialogComponentOrContent, parent, onClose, }, args = null) => {
 	parent = parent ?? document.body;
 	onClose = onClose ?? (() => {});
 
@@ -53,7 +53,7 @@ export const displayDialog = async ({ DialogComponentOrContent, parent, onClose,
 	if (typeof DialogComponentOrContent === 'string')
 		render(contentDiv, span({}, DialogComponentOrContent));
 	else if (typeof DialogComponentOrContent === 'function') {
-		const result = DialogComponentOrContent(contentDiv, handleClose, { ...args });
+		const result = args ? DialogComponentOrContent(contentDiv, handleClose, args) : DialogComponentOrContent(contentDiv, handleClose);
 		if (result instanceof Promise) await result;
 	}
 

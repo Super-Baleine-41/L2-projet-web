@@ -61,7 +61,7 @@ const PokemonCard = (parent, { pokemon, api }) => {
 		onClick: async () => {
 			await displayDialog({
 				DialogComponentOrContent: PokemonDetailedDialog
-			}, pokemonId, api);
+			}, { pokemonId: pokemonId, api: api});
 		}
 		},
 		div({ className: 'flex flex-col items-center gap-2 p-4' },

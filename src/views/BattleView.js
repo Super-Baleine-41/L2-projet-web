@@ -6,7 +6,7 @@ export default class BattleView extends BaseView {
             this.api = api
             this.appState = appState;
             this.player1 = appState.getCurrentAccount();
-            this.player2=null;
+            this.player2 = null;
     }
 
     async render() {
