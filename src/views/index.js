@@ -1,13 +1,15 @@
 import BattleView from "@views/BattleView.js";
+import LobbyView from "@views/LobbyView.js";
 import MainMenuView from "@views/MainMenuView.js";
 import PokemonListView from "@views/PokemonListView.js";
 
 
 const views = {
 	BattleView,
+	LobbyView,
 	MainMenuView,
 	PokemonListView
 };
 
 export default views;
-export { BattleView, MainMenuView, PokemonListView };
+export { BattleView, LobbyView, MainMenuView, PokemonListView };

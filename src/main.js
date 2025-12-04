@@ -3,6 +3,7 @@ import BaseView from "@ui/BaseView.js";
 import AppState from "@utils/AppState.js";
 import PokeAPI from "@utils/PokeAPI.js";
 import MainMenuView from "@views/MainMenuView.js";
+import { LobbyView } from "@views";
 import views from "@views";
 
 const app = document.querySelector('#app');
@@ -29,8 +30,14 @@ const app = document.querySelector('#app');
 
 		await BaseView.switchView(ViewClass, app, appState, api, false, ...(args || []));
 	});
-	// Create and render the main menu
-	const mainMenu = new MainMenuView(app, appState, api);
-	appState.setCurrentView(mainMenu);
-	await mainMenu.render();
+	const offerParam = new URLSearchParams(window.location.search).get('offer');
+	if (offerParam) {
+		const lobbyView = new LobbyView(app, appState, api, offerParam);
+		appState.setCurrentView(lobbyView);
+		await lobbyView.render();
+	} else {
+		const mainMenu = new MainMenuView(app, appState, api);
+		appState.setCurrentView(mainMenu);
+		await mainMenu.render();
+	}
 })();
